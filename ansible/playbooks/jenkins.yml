@@ -1,0 +1,23 @@
+---
+- name: Configure Jenkins Server
+  hosts: jenkins
+  become: yes
+  roles:
+    - common
+    - java17
+    - maven
+    - docker
+    - jenkins
+  
+  vars:
+    jenkins_version: "2.504.3"
+    java_version: "17"
+
+  post_tasks:
+    - name: Jenkins configuration summary
+      debug:
+        msg:
+          - "✅ Jenkins Server configured successfully"
+          - "🚀 Service: Active and running"
+          - "🔑 Access: ssh -L 8081:localhost:8080 jenkins"
+          - "📋 Password file: /home/ec2-user/jenkins_password.txt"

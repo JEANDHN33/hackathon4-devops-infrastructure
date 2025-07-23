@@ -1,0 +1,59 @@
+---
+- name: Install wget for Jenkins repository
+  dnf:
+    name: wget
+    state: present
+
+- name: Add Jenkins repository
+  get_url:
+    url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+
+- name: Import Jenkins GPG key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+- name: Install Jenkins
+  dnf:
+    name: jenkins
+    state: present
+
+- name: Add jenkins user to docker group
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+- name: Start and enable Jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Wait for Jenkins to start
+  wait_for:
+    port: 8080
+    delay: 30
+    timeout: 300
+
+- name: Get Jenkins initial password
+  slurp:
+    src: /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_initial_password
+
+- name: Save Jenkins password to file
+  copy:
+    content: "{{ jenkins_initial_password.content | b64decode }}"
+    dest: /home/ec2-user/jenkins_password.txt
+    owner: ec2-user
+    group: ec2-user
+    mode: '0600'
+
+- name: Display Jenkins access info
+  debug:
+    msg: 
+      - "Jenkins is running on port 8080"
+      - "Initial password: {{ jenkins_initial_password.content | b64decode }}"
+      - "Access via: ssh -L 8081:localhost:8080 jenkins"

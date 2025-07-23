@@ -1,0 +1,57 @@
+---
+- name: Create Kong directory
+  file:
+    path: /opt/kong
+    state: directory
+    owner: ec2-user
+    group: ec2-user
+    mode: '0755'
+
+- name: Deploy Kong docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/kong/docker-compose.yml
+    owner: ec2-user
+    group: ec2-user
+    mode: '0644'
+
+- name: Start Kong services
+  docker_compose:
+    project_src: /opt/kong
+    state: present
+
+- name: Wait for Kong to be healthy
+  uri:
+    url: http://localhost:8001/
+    method: GET
+  register: kong_health
+  until: kong_health.status == 200
+  retries: 30
+  delay: 10
+
+- name: Configure Kong service for Store API
+  uri:
+    url: http://localhost:8001/services
+    method: POST
+    body_format: form-urlencoded
+    body:
+      name: hackathon4-store-api
+      url: "http://{{ hostvars['api-server']['ansible_host'] }}:8080"
+  register: kong_service
+
+- name: Configure Kong route for Store API
+  uri:
+    url: "http://localhost:8001/services/hackathon4-store-api/routes"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      paths[]: "/api"
+      strip_path: true
+  register: kong_route
+
+- name: Display Kong configuration
+  debug:
+    msg:
+      - "Kong Gateway is running"
+      - "Public API: http://{{ ansible_host }}:8000/api"
+      - "Admin API: http://localhost:8001"

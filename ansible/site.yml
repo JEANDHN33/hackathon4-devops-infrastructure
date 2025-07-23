@@ -1,0 +1,17 @@
+---
+- import_playbook: playbooks/jenkins.yml
+- import_playbook: playbooks/api-server.yml  
+- import_playbook: playbooks/kong.yml
+
+- name: Final Architecture Summary
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Display deployment success
+      debug:
+        msg:
+          - "🎉 Hackathon 4 DevOps - Ansible Configuration Complete!"
+          - "✅ Jenkins: Ready for CI/CD pipeline"
+          - "✅ API Server: Ready for deployments"
+          - "✅ Kong Gateway: Public API exposure configured"
+          - "🌐 Your Store API: http://15.236.133.177:8000/api"

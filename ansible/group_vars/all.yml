@@ -1,0 +1,25 @@
+---
+# Infrastructure variables
+project_name: hackathon4-devops
+environment: production
+
+# Network configuration
+bastion_host: 15.236.123.110
+bastion_port: 4222
+
+# Application configuration
+api_server_port: 8080
+jenkins_port: 8080
+kong_proxy_port: 8000
+kong_admin_port: 8001
+
+# Security
+ssh_key_file: ~/.ssh/hackathon4_rsa
+allowed_ssh_users:
+  - ec2-user
+
+# Software versions
+java_version: "17"
+jenkins_version: "2.504.3"  
+kong_version: "3.4.2"
+docker_compose_version: "latest"

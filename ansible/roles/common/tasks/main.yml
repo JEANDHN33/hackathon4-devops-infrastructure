@@ -1,0 +1,27 @@
+---
+- name: Update system packages
+  dnf:
+    name: "*"
+    state: latest
+  tags: update
+
+- name: Install essential packages
+  dnf:
+    name:
+      - curl
+      - wget
+      - git
+      - unzip
+      - htop
+      - vim
+    state: present
+
+- name: Configure timezone
+  timezone:
+    name: Europe/Paris
+  
+- name: Enable and start chronyd
+  systemd:
+    name: chronyd
+    state: started
+    enabled: yes
