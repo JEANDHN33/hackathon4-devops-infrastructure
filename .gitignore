@@ -25,3 +25,5 @@ terraform/*.auto.tfvars.json
 terraform/plan
 terraform/*.plan
 terraform/.terraform.d/
+.terraform/
+.terraform.lock.hcl
