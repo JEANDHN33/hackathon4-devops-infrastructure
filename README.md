@@ -1,54 +1,86 @@
-# Project Overview
+# 🚀 Hackathon 4 DevOps - Store API avec Architecture Terraform + Ansible
 
-This project is a simple RESTful API created using Spring Boot.
+## 📊 Architecture
 
+Infrastructure DevOps complète déployant une Store API Spring Boot sur AWS avec pipeline CI/CD automatisé.
 
-## CI/CD with Jenkins
-This project includes a Jenkins pipeline for CI/CD. The pipeline performs the following tasks:
-1. Checks out the code from the Git repository.
-2. Builds the project using Maven.
-3. Runs unit tests.
-4. Deploys the application to the specified environment.
+🌐 Internet
+↓
+🛡️ Bastion Host (15.236.123.110:4222)
+↓ SSH ProxyJump
+┌─────────────────────────────────────────┐
+│ �� Jenkins (10.0.1.77:8080) │
+│ 📱 API Server (10.0.1.212:8080) │
+│ 🌐 Kong Gateway (10.0.1.202:8000) │
+└─────────────────────────────────────────┘
+↓ Kong Gateway
+🌐 API Publique (15.236.133.177:8000/api)
 
+text
 
-### Setting Up Jenkins
-1. Install Jenkins from the official website.
-2. Install the necessary plugins:
-   - Git Plugin
-   - Maven Integration Plugin
-3. Configure Jenkins with your Git repository and Maven settings.
+## 🛠️ Technologies Utilisées
 
-### Creating a Pipeline
-1. Create a new pipeline in Jenkins.
-2. Configure the pipeline script to point to your Jenkinsfile.
+- **Infrastructure**: Terraform (AWS EC2, VPC, Security Groups)
+- **Configuration**: Ansible (Playbooks + Rôles)
+- **CI/CD**: Jenkins avec pipeline automatisé
+- **Application**: Spring Boot + PostgreSQL
+- **API Gateway**: Kong Gateway
+- **Containerisation**: Docker + Docker Compose
 
+## 🚀 Déploiement
 
-Example `Jenkinsfile`:
-```groovy
-pipeline {
-    agent any
+### 1. Infrastructure (Terraform)
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/yourusername/your-repository.git'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Add your deployment steps here
-            }
-        }
-    }
-}
-```
+cd terraform
+terraform init
+terraform plan
+terraform apply
+
+text
+
+### 2. Configuration Services (Ansible)
+
+cd ansible
+./deploy.sh
+
+text
+
+### 3. Accès Services
+
+- **Jenkins**: `ssh -L 8081:localhost:8080 jenkins` → http://localhost:8081
+- **API Store**: http://15.236.133.177:8000/api
+- **Swagger UI**: http://15.236.133.177:8000/api/swagger-ui/index.html
+
+## 📋 Endpoints API
+
+- `GET /api/users` - Liste des utilisateurs
+- `POST /api/users` - Créer un utilisateur  
+- `GET /api/contacts` - Liste des contacts
+- `POST /api/contacts` - Créer un contact
+- `GET /api/actuator/health` - Health check
+
+## 🔧 Structure du Projet
+
+hackathon4-devops-infrastructure/
+├── terraform/ # Infrastructure as Code
+├── ansible/ # Configuration Management
+├── src/ # Code Store API Spring Boot
+├── scripts/ # Scripts d'automatisation
+└── docs/ # Documentation
+
+text
+
+## 🎯 Architecture DevOps
+
+1. **Terraform** déploie l'infrastructure AWS
+2. **Ansible** configure les services (Jenkins, Kong, Docker)
+3. **Jenkins** automatise le déploiement de l'API
+4. **Kong Gateway** expose l'API publiquement
+
+## 🏆 Réalisations Techniques
+
+- ✅ Infrastructure cloud sécurisée (Bastion + ProxyJump)
+- ✅ Pipeline CI/CD automatisé
+- ✅ API Gateway pour exposition publique
+- ✅ Configuration Management avec Ansible
+- ✅ Monitoring et health checks
