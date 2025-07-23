@@ -2,3 +2,26 @@ target/
 logs/
 .idea/
 /logs
+
+# Terraform - Fichiers à ne jamais versionner
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/terraform.tfplan
+**/terraform.tfplan.*
+terraform/crash.log
+terraform/override.tf
+terraform/override.tf.json
+terraform/*_override.tf
+terraform/*_override.tf.json
+
+# Variables Terraform sensibles
+terraform/terraform.tfvars
+terraform/*.auto.tfvars
+terraform/*.auto.tfvars.json
+
+# Plans et caches
+terraform/plan
+terraform/*.plan
+terraform/.terraform.d/
